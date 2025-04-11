@@ -12,10 +12,11 @@ router.post(
 );
 
 router.post("/signin", authController.signin);
-router.get("/refresh-token", authController.refreshToken);
+router.post("/refreshtoken", authController.refreshToken);
 router.post("/signout", authController.signout);
 router.post("/forgot-password", authController.forgotPassword);
 router.post("/reset-password", authController.resetPassword);
+
 
 // Health check route
 router.get("/health", (req, res) => {

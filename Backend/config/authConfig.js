@@ -4,7 +4,7 @@ module.exports = {
     jwtRefreshExpiration: parseInt(process.env.JWT_REFRESH_EXPIRATION, 10),
     cookieOptions: {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // Use secure cookies in production
+      secure: process.env.NODE_ENV === "production", 
       sameSite: "strict"
     }
   };

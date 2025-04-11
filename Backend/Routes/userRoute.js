@@ -10,6 +10,9 @@ router.use(authJwt.verifyToken);
 // Get all users (admin only)
 router.get("/", authJwt.isAdmin, userController.getAllUsers);
 
+// Get current user - MUST come before the /:id route
+router.get("/me", userController.getCurrentUser);
+
 // Get user by ID
 router.get("/:id", userController.getUserById);
 

@@ -9,7 +9,7 @@ module.exports = (sequelize, Sequelize) => {
     });
   
     RefreshToken.createToken = async function(user) {
-      const authConfig = require("../config/auth.config");
+      const authConfig = require("../config/authConfig");
       const { v4: uuid } = require("uuid");
       
       const expiredAt = new Date();

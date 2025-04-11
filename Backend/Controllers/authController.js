@@ -84,53 +84,59 @@ exports.signin = async (req, res) => {
 
 // Refresh access token using refresh token
  
+// Update in Controllers/authController.js
+
 exports.refreshToken = async (req, res) => {
-  const refreshToken = req.cookies.refreshToken;
-
-  if (!refreshToken) {
-    return res.status(403).send({ message: "Refresh Token is required!" });
-  }
-
-  try {
-    const refreshTokenData = await RefreshToken.findOne({ 
-      where: { token: refreshToken } 
-    });
-
-    if (!refreshTokenData) {
-      res.status(403).send({
-        message: "Refresh token is not in database!"
-      });
-      return;
+    const refreshToken = req.cookies.refreshToken;
+  
+    if (!refreshToken) {
+      return res.status(403).send({ message: "Refresh Token is required!" });
     }
-
-    if (RefreshToken.verifyExpiration(refreshTokenData)) {
-      await RefreshToken.destroy({ where: { id: refreshTokenData.id } });
-      
-      res.clearCookie("accessToken");
-      res.clearCookie("refreshToken");
-      
-      res.status(403).send({
-        message: "Refresh token was expired. Please sign in again!"
+  
+    try {
+      const refreshTokenData = await RefreshToken.findOne({ 
+        where: { token: refreshToken } 
       });
-      return;
+  
+      if (!refreshTokenData) {
+        res.status(403).send({
+          message: "Refresh token is not in database!"
+        });
+        return;
+      }
+  
+      if (RefreshToken.verifyExpiration(refreshTokenData)) {
+        await RefreshToken.destroy({ where: { id: refreshTokenData.id } });
+        
+        res.clearCookie("accessToken");
+        res.clearCookie("refreshToken");
+        
+        res.status(403).send({
+          message: "Refresh token was expired. Please sign in again!"
+        });
+        return;
+      }
+  
+      const user = await User.findByPk(refreshTokenData.userId, {
+        attributes: ['id', 'username', 'email', 'role', 'firstName', 'lastName', 'phone']
+      });
+      
+      let newAccessToken = jwt.sign({ id: user.id }, config.secret, {
+        expiresIn: config.jwtExpiration
+      });
+  
+      res.cookie('accessToken', newAccessToken, config.cookieOptions);
+  
+      return res.status(200).send({
+        message: "Token refreshed successfully",
+        user: user // Return user data with the response
+      });
+    } catch (error) {
+      console.error("Error refreshing token:", error);
+      return res.status(500).send({ message: error.message });
     }
-
-    const user = await User.findByPk(refreshTokenData.userId);
-    let newAccessToken = jwt.sign({ id: user.id }, config.secret, {
-      expiresIn: config.jwtExpiration
-    });
-
-    res.cookie('accessToken', newAccessToken, config.cookieOptions);
-
-    return res.status(200).send({
-      message: "Token refreshed successfully"
-    });
-  } catch (error) {
-    console.error("Error refreshing token:", error);
-    return res.status(500).send({ message: error.message });
-  }
-};
-
+  };
+  
 // Sign out user and clear tokens
 
 exports.signout = async (req, res) => {

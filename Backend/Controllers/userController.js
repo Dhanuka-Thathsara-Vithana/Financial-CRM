@@ -76,3 +76,24 @@ exports.deleteUser = async (req, res) => {
     res.status(500).send({ message: error.message });
   }
 };
+
+// Add this to Controllers/userController.js
+
+exports.getCurrentUser = async (req, res) => {
+    console.log("Current User ID:", req.userId); // Debugging line to check userId
+    try {
+      const user = await User.findByPk(req.userId, {
+        attributes: ['id', 'username', 'email', 'role', 'firstName', 'lastName', 'phone']
+      });
+      
+      if (!user) {
+        return res.status(404).send({ message: "User not found." });
+      }
+      
+      res.status(200).send(user);
+    } catch (error) {
+      console.error("Error fetching current user:", error);
+      res.status(500).send({ message: error.message });
+    }
+  };
+  
