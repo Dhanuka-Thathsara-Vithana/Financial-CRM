@@ -6,7 +6,6 @@ const db = require("../Models");
 const User = db.user;
 const RefreshToken = db.refreshToken;
 const emailService = require("../Services/emailService"); 
-//Register a new user
 
 exports.signup = async (req, res) => {
   try {
@@ -66,7 +65,6 @@ exports.signin = async (req, res) => {
 
     let refreshToken = await RefreshToken.createToken(user);
 
-    // Set cookies with JWT
     res.cookie('accessToken', token, config.cookieOptions);
     res.cookie('refreshToken', refreshToken, config.cookieOptions);
 
@@ -82,9 +80,6 @@ exports.signin = async (req, res) => {
   }
 };
 
-// Refresh access token using refresh token
- 
-// Update in Controllers/authController.js
 
 exports.refreshToken = async (req, res) => {
     const refreshToken = req.cookies.refreshToken;
@@ -129,7 +124,7 @@ exports.refreshToken = async (req, res) => {
   
       return res.status(200).send({
         message: "Token refreshed successfully",
-        user: user // Return user data with the response
+        user: user 
       });
     } catch (error) {
       console.error("Error refreshing token:", error);
@@ -172,7 +167,6 @@ exports.forgotPassword = async (req, res) => {
       return res.status(404).send({ message: "Email not found." });
     }
 
-    // Generate reset token
     const resetToken = crypto.randomBytes(20).toString('hex');
     const resetExpires = Date.now() + 3600000; // 1 hour
 
@@ -181,7 +175,6 @@ exports.forgotPassword = async (req, res) => {
       resetPasswordExpires: resetExpires
     });
 
-    // Send email with reset token
     await emailService.sendPasswordResetEmail(user.email, resetToken);
 
     res.status(200).send({

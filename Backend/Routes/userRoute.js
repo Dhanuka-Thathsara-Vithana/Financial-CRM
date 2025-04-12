@@ -9,10 +9,10 @@ router.use(authJwt.verifyToken);
 // Get all users (admin only)
 router.get("/", authJwt.isAdmin, userController.getAllUsers);
 
-// Get current user - MUST come before the /:id route
+// Get current user
 router.get("/me", userController.getCurrentUser);
 
-// Get all mortgage brokers
+// Get all users except admins
 router.get("/users", userController.getUsersWithoutAdmins);
 
 // Get user by ID

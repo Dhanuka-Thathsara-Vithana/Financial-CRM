@@ -143,14 +143,12 @@ exports.assignTicket = async (req, res) => {
       return res.status(404).send({ message: "Ticket not found." });
     }
     
-    // Check if the target user exists
     const assignee = await User.findByPk(req.body.assignedTo);
     
     if (!assignee) {
       return res.status(404).send({ message: "Assignee user not found." });
     }
     
-    // Update ticket assignment
     await ticket.update({
       assignedTo: req.body.assignedTo,
       status: 'in_progress'
