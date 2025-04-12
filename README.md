@@ -107,3 +107,16 @@ cp .env.example .env
 
 # Start the frontend app
 npm run dev
+
+```
+
+### Create User Role
+
+first load the postman collection
+
+send post request to create new Admin
+
+then login to the system
+
+
+Enjoy 
