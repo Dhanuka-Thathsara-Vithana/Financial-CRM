@@ -5,7 +5,7 @@ const config = require("../config/authConfig");
 const db = require("../Models");
 const User = db.user;
 const RefreshToken = db.refreshToken;
-
+const emailService = require("../Services/emailService"); 
 //Register a new user
 
 exports.signup = async (req, res) => {
@@ -162,7 +162,6 @@ exports.signout = async (req, res) => {
 };
 
 // Generate token for password reset
-
 exports.forgotPassword = async (req, res) => {
   try {
     const user = await User.findOne({
@@ -182,18 +181,18 @@ exports.forgotPassword = async (req, res) => {
       resetPasswordExpires: resetExpires
     });
 
-    // In a real application, you would send an email with the reset link
-    // For this example, we'll just return the token
+    // Send email with reset token
+    await emailService.sendPasswordResetEmail(user.email, resetToken);
+
     res.status(200).send({
-      message: "Password reset email sent.",
-      // In production, don't send the token directly, this is just for demo
-      resetToken: resetToken
+      message: "Password reset email sent."
     });
   } catch (error) {
     console.error("Error during password reset request:", error);
     res.status(500).send({ message: error.message });
   }
 };
+
 
 // Reset password using token
 

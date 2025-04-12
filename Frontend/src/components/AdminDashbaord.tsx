@@ -44,7 +44,7 @@ const TabPanel = (props: TabPanelProps) => {
   );
 };
 
-const AdminDashboard: React.FC = () => {
+function AdminDashboard() {
   const [tabValue, setTabValue] = useState(0);
   const dispatch = useDispatch<AppDispatch>();
   const { user } = useSelector((state: RootState) => state.auth);
@@ -103,7 +103,7 @@ const AdminDashboard: React.FC = () => {
             </TabPanel>
             
             <TabPanel value={tabValue} index={1}>
-              <TicketList isAdmin={true} />
+              <TicketList />
             </TabPanel>
           </>
         )}

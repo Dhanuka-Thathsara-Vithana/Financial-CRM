@@ -22,12 +22,11 @@ interface TicketListProps {
   buttonLabel?: string;
 }
 
-const TicketList: React.FC<TicketListProps> = ({ 
-  filterType, 
+function TicketList({filterType, 
   onAssignTicket,
   showAssignButton = false,
-  buttonLabel = 'Assign'
-}) => {
+  buttonLabel = 'Assign'}: TicketListProps) {
+
   const { tickets, isLoading } = useSelector((state: RootState) => state.tickets);
   const { user: currentUser } = useSelector((state: RootState) => state.auth);
   const userId = currentUser?.id;

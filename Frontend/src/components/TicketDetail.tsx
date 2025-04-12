@@ -26,7 +26,7 @@ import { getTicketById, updateTicketStatus } from '../store/slices/ticketSlice';
 import { fetchCurrentUser, fetchBrokers } from '../store/slices/userSlice';
 import TicketAssignment from './TicketAssignment';
 
-const TicketDetail: React.FC = () => {
+function TicketDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();

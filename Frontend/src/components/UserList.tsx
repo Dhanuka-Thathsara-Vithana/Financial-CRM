@@ -20,11 +20,11 @@ import {
   Button,
   Typography
 } from '@mui/material';
-import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
+import { Delete as DeleteIcon } from '@mui/icons-material';
 import { RootState, AppDispatch } from '../store/store';
 import { deleteUser } from '../store/slices/userSlice';
 
-const UserList: React.FC = () => {
+function UserList() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -33,7 +33,7 @@ const UserList: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { users } = useSelector((state: RootState) => state.users);
   const { user: currentUser } = useSelector((state: RootState) => state.auth);
-  console.log('Current Users:', users); // Debugging line to check current user
+  
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
@@ -156,3 +156,4 @@ const UserList: React.FC = () => {
 };
 
 export default UserList;
+

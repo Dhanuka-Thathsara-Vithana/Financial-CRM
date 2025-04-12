@@ -13,7 +13,7 @@ interface TicketListProps {
   isAdmin?: boolean;
 }
 
-const TicketList: React.FC<TicketListProps> = ({ filterBy, isAdmin }) => {
+function TicketList({ filterBy, isAdmin }: TicketListProps) {
   const { tickets, isLoading, error } = useSelector((state: RootState) => state.tickets);
   const { user: currentUser } = useSelector((state: RootState) => state.auth);
 

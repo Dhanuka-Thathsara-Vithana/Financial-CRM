@@ -4,7 +4,7 @@ import { TextField, Button, Typography, Container, Box } from '@mui/material';
 import { login } from '../store/slices/authSlice';
 import { AppDispatch, RootState } from '../store/store';
 
-const Login: React.FC = () => {
+function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const dispatch = useDispatch<AppDispatch>();

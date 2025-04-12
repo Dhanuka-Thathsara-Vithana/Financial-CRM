@@ -16,7 +16,6 @@ import {
   SelectChangeEvent
 } from '@mui/material';
 import { assignTicket } from '../store/slices/ticketSlice';
-// Remove import for fetchBrokers since it's now called in the parent
 import { AppDispatch, RootState } from '../store/store';
 
 interface TicketAssignmentProps {
@@ -25,11 +24,12 @@ interface TicketAssignmentProps {
   onAssignmentComplete?: () => void;
 }
 
-const TicketAssignment: React.FC<TicketAssignmentProps> = ({ 
+function TicketAssignment({
   ticketId, 
   currentAssigneeId,
-  onAssignmentComplete 
-}) => {
+  onAssignmentComplete
+}: TicketAssignmentProps) {
+
   const [selectedUserId, setSelectedUserId] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
@@ -39,12 +39,16 @@ const TicketAssignment: React.FC<TicketAssignmentProps> = ({
   const { brokers, isLoading } = useSelector((state: RootState) => state.users);
   const { currentUser } = useSelector((state: RootState) => state.users);
   
-  // Filter users based on role - only show mortgage brokers if current user is financial planner
+  
   const eligibleUsers = brokers.filter(user => {
     if (currentUser?.role === 'financial_planner') {
       return user.role === 'mortgage_broker';
     }
   });
+
+  console.log("Eligible users for assignment:", eligibleUsers);
+  console.log("Current user role:", currentUser?.role);
+  console.log("brokers:", brokers);
   
   useEffect(() => {
     if (currentAssigneeId) {

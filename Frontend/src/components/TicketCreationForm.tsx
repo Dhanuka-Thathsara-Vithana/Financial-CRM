@@ -16,7 +16,7 @@ import {
 import { createTicket } from '../store/slices/ticketSlice';
 import { AppDispatch, RootState } from '../store/store';
 
-const TicketCreationForm: React.FC = () => {
+function TicketCreationForm() {
   const [formData, setFormData] = useState({
     clientName: '',
     clientAddress: '',
@@ -116,7 +116,10 @@ const TicketCreationForm: React.FC = () => {
       try {
         const ticketData = {
           ...formData,
-          amount: parseFloat(formData.amount)
+          amount: parseFloat(formData.amount),
+          updatedAt: () => <>{new Date().toISOString()}</>,
+          createdAt: () => <>{new Date().toISOString()}</>,
+          serialNumber: `SN-${Date.now()}`
         };
         
         await dispatch(createTicket(ticketData)).unwrap();

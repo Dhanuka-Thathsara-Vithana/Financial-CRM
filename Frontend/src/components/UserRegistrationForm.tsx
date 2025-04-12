@@ -31,7 +31,7 @@ interface UserFormData {
   phone: string;
 }
 
-const UserRegistrationForm: React.FC = () => {
+function UserRegistrationForm() {
   const [formData, setFormData] = useState<UserFormData>({
     username: '',
     email: '',

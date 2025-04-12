@@ -27,7 +27,7 @@ const STATUS_OPTIONS = [
   { value: 'rejected', label: 'Rejected' }
 ];
 
-const MortgageBrokerDashboard: React.FC = () => {
+function MortgageBrokerDashboard() {
   const dispatch = useDispatch<AppDispatch>();
   const { isLoading } = useSelector((state: RootState) => state.tickets);
   const [statusDialogOpen, setStatusDialogOpen] = useState(false);

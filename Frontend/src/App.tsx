@@ -19,7 +19,7 @@ const TicketDetailWrapper: React.FC = () => {
   return <TicketDetail />;
 };
 
-const App: React.FC = () => {
+function App() {
   const { user, isLoading } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch<AppDispatch>();
 

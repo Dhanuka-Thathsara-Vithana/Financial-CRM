@@ -51,7 +51,7 @@ const TabPanel = (props: TabPanelProps) => {
   );
 };
 
-const FinancialPlannerDashboard: React.FC = () => {
+function FinancialPlannerDashboard() {
   const [tabValue, setTabValue] = useState(0);
   const [assignDialogOpen, setAssignDialogOpen] = useState(false);
   const [selectedTicketId, setSelectedTicketId] = useState<number | null>(null);

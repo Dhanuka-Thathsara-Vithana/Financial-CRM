@@ -7,9 +7,8 @@ const api = axios.create({
   withCredentials: true,
 });
 
-// Track if a token refresh is in progress
+
 let isRefreshing = false;
-// Queue of requests to retry after token refresh
 let failedQueue: any[] = [];
 
 const processQueue = (error: any, token: string | null = null) => {
@@ -28,11 +27,9 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-    
-    // If the error is 401 and we haven't already tried to refresh
     if (error.response?.status === 401 && !originalRequest._retry) {
       if (isRefreshing) {
-        // If a refresh is already in progress, add this request to the queue
+     
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
         })
@@ -48,21 +45,18 @@ api.interceptors.response.use(
       isRefreshing = true;
       
       try {
-        // Call the refresh token endpoint
+    
         await axios.post(`${baseUrl}/auth/refreshtoken`, {}, {
           withCredentials: true
         });
         
-        // Process any requests that were waiting for the token refresh
         processQueue(null);
         
-        // Retry the original request
         return api(originalRequest);
       } catch (refreshError) {
-        // If refresh fails, process the queue with an error
+    
         processQueue(refreshError);
         
-        // No need to redirect here as the checkAuthStatus in App.tsx will handle it
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;

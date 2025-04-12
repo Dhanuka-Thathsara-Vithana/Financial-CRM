@@ -4,7 +4,7 @@ import { TextField, Button, Typography, Container, Box } from '@mui/material';
 import { createTicket } from '../store/slices/ticketSlice';
 import { AppDispatch } from '../store/store';
 
-const CreateTicket: React.FC = () => {
+function CreateTicket() {
   const [clientName, setClientName] = useState('');
   const [clientAddress, setClientAddress] = useState('');
   const [clientPhone, setClientPhone] = useState('');
