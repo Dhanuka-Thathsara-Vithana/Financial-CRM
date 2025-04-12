@@ -41,7 +41,7 @@ const TicketList: React.FC<TicketListProps> = ({
       case 'created':
         return tickets.filter(ticket => ticket.createdBy === userId);
       case 'assigned':
-        return tickets.filter(ticket => ticket.assignedTo === null);
+        return tickets.filter(ticket => ticket.assignedTo !== null);
       case 'assignedTo':
         return tickets.filter(ticket => ticket.assignedTo === userId);
       case 'all':

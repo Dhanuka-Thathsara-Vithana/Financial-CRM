@@ -4,10 +4,6 @@ import api from '../../services/api';
 interface Ticket {
   updatedAt(updatedAt: any): import("react").ReactNode;
   createdAt(createdAt: any): import("react").ReactNode;
-  assignee: any;
-  assignee: any;
-  creator: any;
-  creator: any;
   serialNumber: string;
   id: number;
   clientName: string;

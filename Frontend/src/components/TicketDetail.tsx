@@ -320,7 +320,7 @@ const TicketDetail: React.FC = () => {
                   color="primary"
                   onClick={handleUpdateTicket}
                   disabled={isSubmitting}
-                  sx={{ mt: 1 }}
+                  sx={{ mt: 3 }}
                 >
                   {isSubmitting ? <CircularProgress size={24} /> : 'Update Ticket'}
                 </Button>

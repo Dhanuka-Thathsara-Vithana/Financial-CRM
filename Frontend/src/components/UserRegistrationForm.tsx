@@ -17,7 +17,7 @@ import {
   Snackbar,
   Alert
 } from '@mui/material';
-import { createUser } from '../store/slices/userSlice';
+import { createUser, fetchUsers } from '../store/slices/userSlice';
 import { AppDispatch, RootState } from '../store/store';
 
 // Define the user interface to match what createUser expects
@@ -141,31 +141,32 @@ const UserRegistrationForm: React.FC = () => {
     }));
   };
   
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (validateForm()) {
-      try {
-        console.log('Form data:', formData);
-        await dispatch(createUser(formData as any)).unwrap();
-        setSuccessMessage(`User ${formData.username} created successfully!`);
-        setShowSuccessAlert(true);
-        
-        // Reset form
-        setFormData({
-          username: '',
-          email: '',
-          password: '',
-          role: '',
-          firstName: '',
-          lastName: '',
-          phone: ''
-        });
-      } catch (err) {
-        console.error('Failed to create user:', err);
-      }
+  // In src/components/UserRegistrationForm.tsx
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  
+  if (validateForm()) {
+    try {
+      await dispatch(createUser(formData as any)).unwrap();
+      await dispatch(fetchUsers());
+      
+      setSuccessMessage(`User ${formData.username} created successfully!`);
+      setShowSuccessAlert(true);
+      
+      setFormData({
+        username: '',
+        email: '',
+        password: '',
+        role: '',
+        firstName: '',
+        lastName: '',
+        phone: ''
+      });
+    } catch (err) {
+      console.error('Failed to create user:', err);
     }
-  };
+  }
+};
   
   return (
     <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
@@ -228,6 +229,7 @@ const UserRegistrationForm: React.FC = () => {
               fullWidth 
               margin="normal"
               error={!!formErrors.role}
+              sx={{ minWidth: '200px' }} 
             >
               <InputLabel id="role-label">Role</InputLabel>
               <Select
