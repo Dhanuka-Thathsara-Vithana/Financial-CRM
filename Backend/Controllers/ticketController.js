@@ -116,7 +116,6 @@ exports.updateTicket = async (req, res) => {
       return res.status(404).send({ message: "Ticket not found." });
     }
     
-    // Update the ticket
     await ticket.update({
       clientName: req.body.clientName || ticket.clientName,
       clientAddress: req.body.clientAddress || ticket.clientAddress,

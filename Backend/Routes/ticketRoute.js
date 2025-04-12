@@ -1,16 +1,15 @@
-// routes/ticketRoutes.js
 const express = require("express");
 const router = express.Router();
 const { authJwt } = require("../Middleware");
 const ticketController = require("../Controllers/ticketController");
 
-// Apply JWT verification to all routes
+
 router.use(authJwt.verifyToken);
 
 // Create a new ticket
 router.post("/", ticketController.createTicket);
 
-// Get all tickets (could be restricted by role in the controller)
+// Get all tickets 
 router.get("/", ticketController.getAllTickets);
 
 // Get tickets belonging to the current user

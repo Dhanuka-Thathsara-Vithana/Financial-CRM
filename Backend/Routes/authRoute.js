@@ -1,10 +1,8 @@
-// routes/authRoutes.js
 const express = require("express");
 const router = express.Router();
 const { verifySignUp } = require("../Middleware");
 const authController = require("../Controllers/authController");
 
-// Apply middleware to specific routes
 router.post(
   "/signup",
   [verifySignUp.checkDuplicateUsernameOrEmail, verifySignUp.checkRoleExists],

@@ -36,7 +36,6 @@ exports.updateUser = async (req, res) => {
       return res.status(404).send({ message: "User not found." });
     }
     
-    // Update only allowed fields
     const updatedUser = await user.update({
       firstName: req.body.firstName || user.firstName,
       lastName: req.body.lastName || user.lastName,
@@ -77,10 +76,8 @@ exports.deleteUser = async (req, res) => {
   }
 };
 
-// Add this to Controllers/userController.js
-
 exports.getCurrentUser = async (req, res) => {
-    console.log("Current User ID:", req.userId); // Debugging line to check userId
+  
     try {
       const user = await User.findByPk(req.userId, {
         attributes: ['id', 'username', 'email', 'role', 'firstName', 'lastName', 'phone']

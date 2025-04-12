@@ -1,8 +1,6 @@
-// middlewares/verifySignUp.js
 const db = require("../Models");
 const User = db.user;
 
-// Check if username or email is already in use
 const checkDuplicateUsernameOrEmail = async (req, res, next) => {
   try {
     // Check for duplicate username
