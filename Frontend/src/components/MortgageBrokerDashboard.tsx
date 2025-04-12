@@ -1,5 +1,4 @@
-// src/components/MortgageBrokerDashboard.tsx
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Container,
@@ -94,8 +93,7 @@ function MortgageBrokerDashboard() {
           />
         )}
       </Paper>
-      
-      {/* Status Update Dialog */}
+    
       <Dialog 
         open={statusDialogOpen} 
         onClose={() => setStatusDialogOpen(false)}

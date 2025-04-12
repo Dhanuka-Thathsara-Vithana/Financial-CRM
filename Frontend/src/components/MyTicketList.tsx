@@ -1,5 +1,4 @@
-// TicketList.tsx - Updated version
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { 
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow, 
@@ -7,17 +6,15 @@ import {
 } from '@mui/material';
 import { RootState } from '../store/store';
 
-// Define props interface for TicketList component
 interface TicketListProps {
   filterBy?: 'created' | 'assigned' | 'assignedTo' | string;
   isAdmin?: boolean;
 }
 
-function TicketList({ filterBy, isAdmin }: TicketListProps) {
+function TicketList({ filterBy }: TicketListProps) {
   const { tickets, isLoading, error } = useSelector((state: RootState) => state.tickets);
   const { user: currentUser } = useSelector((state: RootState) => state.auth);
 
-  // Filter tickets based on the filterBy prop if provided
   const filteredTickets = useMemo(() => {
     if (!filterBy || !currentUser) return tickets;
 
@@ -48,8 +45,6 @@ function TicketList({ filterBy, isAdmin }: TicketListProps) {
   if (error) {
     return <Typography color="error">{error}</Typography>;
   }
-
-  // Use filtered tickets if filterBy is provided, otherwise use all tickets
   const displayTickets = filterBy ? filteredTickets : tickets;
 
   return (

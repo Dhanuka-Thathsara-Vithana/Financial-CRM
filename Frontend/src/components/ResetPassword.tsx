@@ -18,7 +18,6 @@ function ResetPassword() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      // Handle password mismatch
       return;
     }
     if (token) {
@@ -27,7 +26,8 @@ function ResetPassword() {
         setSuccess(true);
         setTimeout(() => navigate('/login'), 3000);
       } catch (err) {
-        // Error is handled by the Redux slice
+        console.error('Error resetting password:', err);
+        setSuccess(false);
       }
     }
   };

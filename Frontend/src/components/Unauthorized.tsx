@@ -1,4 +1,3 @@
-import React from 'react';
 import { Typography, Paper, Button, Box } from '@mui/material';
 import { Link } from 'react-router-dom';
 

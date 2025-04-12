@@ -1,5 +1,4 @@
-// src/App.tsx
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from './store/store';
@@ -87,15 +86,15 @@ function App() {
       </AppBar>
       <Container>
         <Routes>
-          {/* Authentication routes */}
+       
           <Route path="/login" element={user ? <Navigate to="/dashboard" /> : <Login />} />
           <Route path="/forgot-password" element={user ? <Navigate to="/dashboard" /> : <ForgotPassword />} />
           <Route path="/reset-password" element={user ? <Navigate to="/dashboard" /> : <ResetPassword />} />
           
-          {/* Dashboard route */}
+        
           <Route path="/dashboard" element={getDashboardComponent()} />
           
-          {/* Ticket management routes */}
+     
           <Route 
             path="/create-ticket" 
             element={
@@ -118,7 +117,6 @@ function App() {
             } 
           />
           
-          {/* Default route */}
           <Route path="/" element={<Navigate to={user ? "/dashboard" : "/login"} />} />
         </Routes>
       </Container>

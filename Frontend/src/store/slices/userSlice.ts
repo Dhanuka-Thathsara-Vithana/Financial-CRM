@@ -1,4 +1,3 @@
-// src/store/slices/userSlice.ts
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../../services/api';
 
@@ -6,7 +5,7 @@ interface User {
   id: number;
   username: string;
   email: string;
-  password?: string; // Only used for creation
+  password?: string; 
   role: 'admin' | 'financial_planner' | 'mortgage_broker';
   firstName: string;
   lastName: string;
@@ -15,7 +14,7 @@ interface User {
 
 interface UserState {
   users: User[];
-  brokers: User[]; // Added brokers array
+  brokers: User[];
   currentUser: User | null;
   isLoading: boolean;
   error: string | null;
@@ -23,7 +22,7 @@ interface UserState {
 
 const initialState: UserState = {
   users: [],
-  brokers: [], // Initialize brokers array
+  brokers: [], 
   currentUser: null,
   isLoading: false,
   error: null,
@@ -74,7 +73,6 @@ const userSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // Fetch users
       .addCase(fetchUsers.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -87,8 +85,6 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.error = action.error.message || 'Failed to fetch users';
       })
-      
-      // Fetch brokers
       .addCase(fetchBrokers.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -101,8 +97,6 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.error = action.error.message || 'Failed to fetch brokers';
       })
-      
-      // Fetch current user
       .addCase(fetchCurrentUser.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -115,8 +109,6 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.error = action.error.message || 'Failed to fetch current user';
       })
-      
-      // Create user
       .addCase(createUser.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -124,7 +116,6 @@ const userSlice = createSlice({
       .addCase(createUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.users.push(action.payload);
-        // If the new user is a broker, add to brokers array as well
         if (action.payload.role === 'mortgage_broker') {
           state.brokers.push(action.payload);
         }
@@ -133,22 +124,16 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.error = action.error.message || 'Failed to create user';
       })
-      
-      // Update user
       .addCase(updateUser.fulfilled, (state, action) => {
         const index = state.users.findIndex(user => user.id === action.payload.id);
         if (index !== -1) {
           state.users[index] = action.payload;
         }
-        
-        // Also update in brokers array if present
         const brokerIndex = state.brokers.findIndex(broker => broker.id === action.payload.id);
         if (brokerIndex !== -1) {
           state.brokers[brokerIndex] = action.payload;
         }
       })
-      
-      // Delete user
       .addCase(deleteUser.fulfilled, (state, action) => {
         state.users = state.users.filter(user => user.id !== action.payload);
         state.brokers = state.brokers.filter(broker => broker.id !== action.payload);

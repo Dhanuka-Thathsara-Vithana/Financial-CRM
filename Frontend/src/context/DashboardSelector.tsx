@@ -2,7 +2,6 @@ import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { Navigate, useNavigate } from "react-router-dom";
 
-// Role-specific dashboard component
 export const DashboardSelector = () => {
     const navigate = useNavigate();
     const { user } = useSelector((state: RootState) => state.auth);

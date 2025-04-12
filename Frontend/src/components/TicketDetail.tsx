@@ -1,4 +1,3 @@
-// src/components/TicketDetail.tsx
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -47,7 +46,6 @@ function TicketDetail() {
   const ticket = tickets.find(t => t.id === Number(id));
   
   useEffect(() => {
-    // Load specific ticket by ID and users
     const loadTicket = async () => {
       try {
         await dispatch(getTicketById(Number(id))).unwrap();
@@ -59,15 +57,13 @@ function TicketDetail() {
     
     loadTicket();
     
-    // Load users and brokers once when component mounts
     if (users.length === 0) {
       dispatch(fetchCurrentUser());
-      dispatch(fetchBrokers()); // Move this call here to run once
+      dispatch(fetchBrokers()); 
     }
   }, [dispatch, id, users.length]);
   
   useEffect(() => {
-    // Initialize form with ticket data when ticket is loaded
     if (ticket) {
       setStatus(ticket.status);
       setNotes(ticket.notes || '');
@@ -152,7 +148,6 @@ function TicketDetail() {
     });
   };
   
-  // Show loading state
   if (ticketsLoading || usersLoading) {
     return (
       <Container maxWidth="md" sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
@@ -161,7 +156,6 @@ function TicketDetail() {
     );
   }
   
-  // Show error if ticket failed to load
   if (ticketLoadError) {
     return (
       <Container maxWidth="md" sx={{ mt: 4 }}>
@@ -179,7 +173,6 @@ function TicketDetail() {
     );
   }
   
-  // Show error if ticket not found
   if (!ticket) {
     return (
       <Container maxWidth="md" sx={{ mt: 4 }}>
@@ -197,12 +190,10 @@ function TicketDetail() {
     );
   }
  
-  // Check if user can edit this ticket
   const canEdit = currentUser?.role === 'admin' || 
                  ticket.createdBy === currentUser?.id || 
                  ticket.assignedTo === currentUser?.id;
-  
-  // Check if user can assign this ticket
+
   const canAssign = currentUser?.role === 'admin' || 
                    ticket.createdBy === currentUser?.id;
 
@@ -272,7 +263,6 @@ function TicketDetail() {
             <TicketAssignment 
               ticketId={ticket.id} 
               currentAssigneeId={ticket.assignedTo}
-              // Don't need to fetch brokers in child component anymore
             />
           </Box>
         )}

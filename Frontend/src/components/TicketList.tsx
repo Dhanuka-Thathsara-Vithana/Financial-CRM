@@ -1,5 +1,4 @@
-// src/components/TicketList.tsx
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { 
@@ -31,7 +30,6 @@ function TicketList({filterType,
   const { user: currentUser } = useSelector((state: RootState) => state.auth);
   const userId = currentUser?.id;
 
-  // Filter tickets based on the filterType prop
   const filteredTickets = useMemo(() => {
     if (!tickets) return [];
     console.log("Filtering tickets with filterType:", filterType);

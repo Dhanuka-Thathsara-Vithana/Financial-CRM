@@ -29,10 +29,9 @@ export const checkAuthStatus = createAsyncThunk(
     'auth/checkStatus',
     async (_, { rejectWithValue }) => {
       try {
-        // First ensure the token is refreshed if needed
+      
         await api.post('/auth/refreshtoken');
         
-        // Then fetch the current user data
         const response = await api.get('/users/me');
         return response.data;
       } catch (error) {
@@ -103,7 +102,6 @@ const authSlice = createSlice({
       })
       .addCase(requestPasswordReset.fulfilled, (state) => {
         state.isLoading = false;
-        // You might want to set a success message here if needed
       })
       .addCase(requestPasswordReset.rejected, (state, action) => {
         state.isLoading = false;
@@ -115,7 +113,6 @@ const authSlice = createSlice({
       })
       .addCase(resetPasswordWithToken.fulfilled, (state) => {
         state.isLoading = false;
-        // You might want to set a success message here if needed
       })
       .addCase(resetPasswordWithToken.rejected, (state, action) => {
         state.isLoading = false;

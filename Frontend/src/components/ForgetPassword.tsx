@@ -16,7 +16,7 @@ const ForgotPassword: React.FC = () => {
       await dispatch(requestPasswordReset(email)).unwrap();
       setSuccess(true);
     } catch (err) {
-      // Error is handled by the Redux slice
+      console.log('Error requesting password reset:', err);
     }
   };
 

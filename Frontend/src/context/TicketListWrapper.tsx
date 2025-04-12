@@ -3,7 +3,6 @@ import MyTicketList from "../components/MyTicketList";
 import { RootState } from "../store/store";
 import { Navigate } from "react-router-dom";
 
-// Ticket list with role-specific filtering
 export const TicketListWrapper = () => {
   const { user } = useSelector((state: RootState) => state.auth);
   

@@ -1,4 +1,3 @@
-// src/components/UserRegistrationForm.tsx
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { 
@@ -20,7 +19,6 @@ import {
 import { createUser, fetchUsers } from '../store/slices/userSlice';
 import { AppDispatch, RootState } from '../store/store';
 
-// Define the user interface to match what createUser expects
 interface UserFormData {
   username: string;
   email: string;
@@ -141,7 +139,6 @@ function UserRegistrationForm() {
     }));
   };
   
-  // In src/components/UserRegistrationForm.tsx
 const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
   

@@ -1,4 +1,3 @@
-// src/components/UserList.tsx
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
@@ -34,7 +33,7 @@ function UserList() {
   const { users } = useSelector((state: RootState) => state.users);
   const { user: currentUser } = useSelector((state: RootState) => state.auth);
   
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = ( newPage: number) => {
     setPage(newPage);
   };
 
@@ -127,7 +126,7 @@ function UserList() {
           count={users.length}
           rowsPerPage={rowsPerPage}
           page={page}
-          onPageChange={handleChangePage}
+          onChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </TableContainer>

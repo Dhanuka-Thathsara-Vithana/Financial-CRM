@@ -1,4 +1,3 @@
-// src/components/FinancialPlannerDashboard.tsx
 import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -137,7 +136,6 @@ function FinancialPlannerDashboard() {
         )}
       </Paper>
       
-      {/* Broker Assignment Dialog */}
       <Dialog open={assignDialogOpen} onClose={() => setAssignDialogOpen(false)}>
         <DialogTitle>Assign Ticket to Broker</DialogTitle>
         <DialogContent>

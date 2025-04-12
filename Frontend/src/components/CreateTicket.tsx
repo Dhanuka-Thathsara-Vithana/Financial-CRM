@@ -21,6 +21,13 @@ function CreateTicket() {
       clientPhone,
       clientEmail,
       amount: parseFloat(amount),
+      updatedAt: function (updatedAt: any): import("react").ReactNode {
+        throw new Error('Function not implemented.');
+      },
+      createdAt: function (createdAt: any): import("react").ReactNode {
+        throw new Error('Function not implemented.');
+      },
+      serialNumber: ''
     }));
   };
 
