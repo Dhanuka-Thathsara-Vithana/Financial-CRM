@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { TextField, Button, Typography, Container, Box } from '@mui/material';
+import { TextField, Button, Typography, Container, Box, Link } from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';
 import { login } from '../store/slices/authSlice';
 import { AppDispatch, RootState } from '../store/store';
 
@@ -62,8 +63,16 @@ function Login() {
           >
             {isLoading ? 'Signing in...' : 'Sign In'}
           </Button>
+          
+          {/* Forgot Password Link */}
+          <Box sx={{ textAlign: 'center', mt: 1 }}>
+            <Link component={RouterLink} to="/forgot-password" variant="body2">
+              Forgot password?
+            </Link>
+          </Box>
+          
           {error && (
-            <Typography color="error" align="center">
+            <Typography color="error" align="center" sx={{ mt: 2 }}>
               {error}
             </Typography>
           )}

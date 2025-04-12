@@ -10,12 +10,13 @@ import FinancialPlannerDashboard from './components/FinancialPlannerDashboard';
 import MortgageBrokerDashboard from './components/MortgageBrokerDashboard';
 import TicketCreationForm from './components/TicketCreationForm';
 import TicketDetail from './components/TicketDetail';
+import ForgotPassword from './components/ForgetPassword';
+import ResetPassword from './components/ResetPassword';
 import { AppBar, Toolbar, Typography, Button, Container, CircularProgress, Box } from '@mui/material';
 import { Link } from 'react-router-dom';
 import MyTicketList from './components/MyTicketList';
 
-// Wrapper component for TicketDetail to extract the ID parameter
-const TicketDetailWrapper: React.FC = () => {
+function TicketDetailWrapper() {
   return <TicketDetail />;
 };
 
@@ -39,7 +40,7 @@ function App() {
     );
   }
 
-  // Determine which dashboard to show based on user role
+
   const getDashboardComponent = () => {
     if (!user) return <Navigate to="/login" />;
     
@@ -86,8 +87,15 @@ function App() {
       </AppBar>
       <Container>
         <Routes>
+          {/* Authentication routes */}
           <Route path="/login" element={user ? <Navigate to="/dashboard" /> : <Login />} />
+          <Route path="/forgot-password" element={user ? <Navigate to="/dashboard" /> : <ForgotPassword />} />
+          <Route path="/reset-password" element={user ? <Navigate to="/dashboard" /> : <ResetPassword />} />
+          
+          {/* Dashboard route */}
           <Route path="/dashboard" element={getDashboardComponent()} />
+          
+          {/* Ticket management routes */}
           <Route 
             path="/create-ticket" 
             element={
@@ -109,6 +117,8 @@ function App() {
               user ? <TicketDetailWrapper /> : <Navigate to="/login" />
             } 
           />
+          
+          {/* Default route */}
           <Route path="/" element={<Navigate to={user ? "/dashboard" : "/login"} />} />
         </Routes>
       </Container>

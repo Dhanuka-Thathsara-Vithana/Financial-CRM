@@ -41,6 +41,30 @@ export const checkAuthStatus = createAsyncThunk(
     }
   );
 
+  export const requestPasswordReset = createAsyncThunk(
+    'auth/requestPasswordReset',
+    async (email: string, { rejectWithValue }) => {
+      try {
+        const response = await api.post('/auth/forgot-password', { email });
+        return response.data;
+      } catch (error: any) {
+        return rejectWithValue(error.response?.data?.message || 'Failed to request password reset');
+      }
+    }
+  );
+  
+  export const resetPasswordWithToken = createAsyncThunk(
+    'auth/resetPassword',
+    async ({ token, password }: { token: string; password: string }, { rejectWithValue }) => {
+      try {
+        const response = await api.post('/auth/reset-password', { token, password });
+        return response.data;
+      } catch (error: any) {
+        return rejectWithValue(error.response?.data?.message || 'Failed to reset password');
+      }
+    }
+  );
+
 const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -72,6 +96,30 @@ const authSlice = createSlice({
       .addCase(checkAuthStatus.rejected, (state) => {
         state.isLoading = false;
         state.user = null;
+      })
+      .addCase(requestPasswordReset.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(requestPasswordReset.fulfilled, (state) => {
+        state.isLoading = false;
+        // You might want to set a success message here if needed
+      })
+      .addCase(requestPasswordReset.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string || 'Failed to request password reset';
+      })
+      .addCase(resetPasswordWithToken.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(resetPasswordWithToken.fulfilled, (state) => {
+        state.isLoading = false;
+        // You might want to set a success message here if needed
+      })
+      .addCase(resetPasswordWithToken.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string || 'Failed to reset password';
       });
   },
 });

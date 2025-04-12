@@ -1,49 +1,37 @@
-// src/components/ForgotPassword.tsx
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { TextField, Button, Typography, Container, Box, Alert } from '@mui/material';
-import { authService } from ;
+import { AppDispatch, RootState } from '../store/store';
+import { requestPasswordReset } from '../store/slices/authSlice';
 
-function ForgotPassword(){
+const ForgotPassword: React.FC = () => {
   const [email, setEmail] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
+  const { isLoading, error } = useSelector((state: RootState) => state.auth);
   const [success, setSuccess] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    setError(null);
-    
     try {
-      await authService.forgotPassword({ email });
+      await dispatch(requestPasswordReset(email)).unwrap();
       setSuccess(true);
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to send reset email');
-    } finally {
-      setIsSubmitting(false);
+    } catch (err) {
+      // Error is handled by the Redux slice
     }
   };
 
   return (
     <Container maxWidth="xs">
-      <Box
-        sx={{
-          marginTop: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
+      <Box sx={{ mt: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <Typography component="h1" variant="h5">
           Forgot Password
         </Typography>
-        
         {success ? (
-          <Alert severity="success" sx={{ mt: 3, width: '100%' }}>
+          <Alert severity="success" sx={{ mt: 2 }}>
             If an account exists with that email, we've sent password reset instructions.
           </Alert>
         ) : (
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1, width: '100%' }}>
+          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
               margin="normal"
               required
@@ -56,21 +44,19 @@ function ForgotPassword(){
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-            
             {error && (
               <Alert severity="error" sx={{ mt: 2 }}>
                 {error}
               </Alert>
             )}
-            
             <Button
               type="submit"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
-              disabled={isSubmitting}
+              disabled={isLoading}
             >
-              {isSubmitting ? 'Sending...' : 'Send Reset Link'}
+              {isLoading ? 'Sending...' : 'Send Reset Link'}
             </Button>
           </Box>
         )}
