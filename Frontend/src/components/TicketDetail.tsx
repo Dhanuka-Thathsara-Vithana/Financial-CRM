@@ -24,6 +24,14 @@ import { AppDispatch, RootState } from '../store/store';
 import { getTicketById, updateTicketStatus } from '../store/slices/ticketSlice';
 import { fetchCurrentUser, fetchBrokers } from '../store/slices/userSlice';
 import TicketAssignment from './TicketAssignment';
+import { Ticket } from '../types/ticket';
+import { 
+  formatCurrency, 
+  formatDate, 
+  getStatusColor, 
+  getStatusLabel 
+} from '../utils/formatters';
+import { TICKET_STATUS } from '../constants/ticketConstants';
 
 function TicketDetail() {
   const { id } = useParams<{ id: string }>();
@@ -42,8 +50,7 @@ function TicketDetail() {
   const [error, setError] = useState<string | null>(null);
   const [ticketLoadError, setTicketLoadError] = useState<string | null>(null);
   
-  // Find the current ticket
-  const ticket = tickets.find(t => t.id === Number(id));
+  const ticket = tickets.find(t => t.id === Number(id)) as Ticket | undefined;
   
   useEffect(() => {
     const loadTicket = async () => {
@@ -105,49 +112,13 @@ function TicketDetail() {
     }
   };
   
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'new':
-        return 'info';
-      case 'in_progress':
-        return 'warning';
-      case 'completed':
-        return 'success';
-      default:
-        return 'default';
-    }
-  };
-  
-  const getStatusLabel = (status: string) => {
-    switch (status) {
-      case 'new':
-        return 'New';
-      case 'in_progress':
-        return 'In Progress';
-      case 'completed':
-        return 'Completed';
-      default:
-        return status;
-    }
-  };
-  
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-AU', {
-      style: 'currency',
-      currency: 'AUD'
-    }).format(amount);
-  };
-  
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString('en-AU', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
-  
+  const canEdit = currentUser?.role === 'admin' || 
+                 ticket?.createdBy === currentUser?.id || 
+                 ticket?.assignedTo === currentUser?.id;
+
+  const canAssign = currentUser?.role === 'admin' || 
+                   ticket?.createdBy === currentUser?.id;
+
   if (ticketsLoading || usersLoading) {
     return (
       <Container maxWidth="md" sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
@@ -189,13 +160,6 @@ function TicketDetail() {
       </Container>
     );
   }
- 
-  const canEdit = currentUser?.role === 'admin' || 
-                 ticket.createdBy === currentUser?.id || 
-                 ticket.assignedTo === currentUser?.id;
-
-  const canAssign = currentUser?.role === 'admin' || 
-                   ticket.createdBy === currentUser?.id;
 
   return (
     <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
@@ -236,10 +200,10 @@ function TicketDetail() {
             <Typography variant="subtitle1" fontWeight="bold">Ticket Information</Typography>
             <Box sx={{ mt: 2 }}>
               <Typography variant="body1">
-                <strong>Created By:</strong> {ticket.creator ? `${ticket.creator.username}` : 'Unknown'}
+                <strong>Created By:</strong> {ticket.creator ? ticket.creator.username : 'Unknown'}
               </Typography>
               <Typography variant="body1">
-                <strong>Assigned To:</strong> {ticket.assignee ? `${ticket.assignee.username} ` : 'Unassigned'}
+                <strong>Assigned To:</strong> {ticket.assignee ? ticket.assignee.username : 'Unassigned'}
               </Typography>
               <Typography variant="body1">
                 <strong>Created:</strong> {formatDate(String(ticket.createdAt))}
@@ -262,7 +226,7 @@ function TicketDetail() {
           <Box sx={{ mt: 4 }}>
             <TicketAssignment 
               ticketId={ticket.id} 
-              currentAssigneeId={ticket.assignedTo}
+              currentAssigneeId={ticket.assignedTo ?? null}
             />
           </Box>
         )}
@@ -284,9 +248,9 @@ function TicketDetail() {
                     label="Status"
                     onChange={handleStatusChange as any}
                   >
-                    <MenuItem value="new">New</MenuItem>
-                    <MenuItem value="in_progress">In Progress</MenuItem>
-                    <MenuItem value="completed">Completed</MenuItem>
+                    <MenuItem value={TICKET_STATUS.NEW}>New</MenuItem>
+                    <MenuItem value={TICKET_STATUS.IN_PROGRESS}>In Progress</MenuItem>
+                    <MenuItem value={TICKET_STATUS.COMPLETED}>Completed</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
@@ -342,6 +306,6 @@ function TicketDetail() {
       </Snackbar>
     </Container>
   );
-};
+}
 
 export default TicketDetail;

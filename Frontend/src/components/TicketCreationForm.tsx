@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   TextField,
@@ -14,129 +14,65 @@ import {
 } from '@mui/material';
 import { createTicket } from '../store/slices/ticketSlice';
 import { AppDispatch, RootState } from '../store/store';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+
+const ticketSchema = z.object({
+  clientName: z.string().min(1, 'Client name is required'),
+  clientAddress: z.string().min(1, 'Client address is required'),
+  clientPhone: z.string()
+    .min(1, 'Client phone is required')
+    .regex(/^\+?[0-9]{10,15}$/, 'Invalid phone format (e.g., +61412345678)'),
+  clientEmail: z.string()
+    .min(1, 'Client email is required')
+    .email('Invalid email format'),
+  amount: z.string()
+    .min(1, 'Amount is required')
+    .refine((val) => !isNaN(Number(val)) && Number(val) > 0, {
+      message: 'Amount must be a positive number',
+    }),
+  notes: z.string().optional()
+});
+
+type TicketFormData = z.infer<typeof ticketSchema>;
 
 function TicketCreationForm() {
-  const [formData, setFormData] = useState({
-    clientName: '',
-    clientAddress: '',
-    clientPhone: '',
-    clientEmail: '',
-    amount: '',
-    notes: ''
-  });
-  
-  const [formErrors, setFormErrors] = useState({
-    clientName: '',
-    clientAddress: '',
-    clientPhone: '',
-    clientEmail: '',
-    amount: '',
-    notes: ''
-  });
-  
   const [successMessage, setSuccessMessage] = useState('');
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   
   const dispatch = useDispatch<AppDispatch>();
   const { isLoading, error } = useSelector((state: RootState) => state.tickets);
+
+  const {register,handleSubmit,reset,formState: { errors }} = useForm<TicketFormData>({
+    resolver: zodResolver(ticketSchema),
+    defaultValues: {
+      clientName: '',
+      clientAddress: '',
+      clientPhone: '',
+      clientEmail: '',
+      amount: '',
+      notes: ''
+    }
+  });
   
-  const validateForm = () => {
-    let valid = true;
-    const newErrors = { ...formErrors };
-    
-    // Client name validation
-    if (!formData.clientName.trim()) {
-      newErrors.clientName = 'Client name is required';
-      valid = false;
-    } else {
-      newErrors.clientName = '';
-    }
-    
-    // Client address validation
-    if (!formData.clientAddress.trim()) {
-      newErrors.clientAddress = 'Client address is required';
-      valid = false;
-    } else {
-      newErrors.clientAddress = '';
-    }
-    
-    // Client phone validation
-    const phoneRegex = /^\+?[0-9]{10,15}$/;
-    if (!formData.clientPhone.trim()) {
-      newErrors.clientPhone = 'Client phone is required';
-      valid = false;
-    } else if (!phoneRegex.test(formData.clientPhone)) {
-      newErrors.clientPhone = 'Invalid phone format (e.g., +61412345678)';
-      valid = false;
-    } else {
-      newErrors.clientPhone = '';
-    }
-    
-    // Client email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!formData.clientEmail.trim()) {
-      newErrors.clientEmail = 'Client email is required';
-      valid = false;
-    } else if (!emailRegex.test(formData.clientEmail)) {
-      newErrors.clientEmail = 'Invalid email format';
-      valid = false;
-    } else {
-      newErrors.clientEmail = '';
-    }
-    
-    // src/components/TicketCreationForm.tsx (continued)
-    // Amount validation
-    if (!formData.amount) {
-      newErrors.amount = 'Amount is required';
-      valid = false;
-    } else if (isNaN(Number(formData.amount)) || Number(formData.amount) <= 0) {
-      newErrors.amount = 'Amount must be a positive number';
-      valid = false;
-    } else {
-      newErrors.amount = '';
-    }
-    
-    setFormErrors(newErrors);
-    return valid;
-  };
-  
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-  
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (validateForm()) {
-      try {
-        const ticketData = {
-          ...formData,
-          amount: parseFloat(formData.amount),
-          updatedAt: () => <>{new Date().toISOString()}</>,
-          createdAt: () => <>{new Date().toISOString()}</>,
-          serialNumber: `SN-${Date.now()}`
-        };
-        
-        await dispatch(createTicket(ticketData)).unwrap();
-        setSuccessMessage('Ticket created successfully!');
-        setShowSuccessAlert(true);
-        
-        // Reset form
-        setFormData({
-          clientName: '',
-          clientAddress: '',
-          clientPhone: '',
-          clientEmail: '',
-          amount: '',
-          notes: ''
-        });
-      } catch (err) {
-        console.error('Failed to create ticket:', err);
-      }
+  const onSubmit = async (formData: TicketFormData) => {
+    try {
+      const ticketData = {
+        ...formData,
+        amount: parseFloat(formData.amount),
+        updatedAt: () => <>{new Date().toISOString()}</>,
+        createdAt: () => <>{new Date().toISOString()}</>,
+        serialNumber: `SN-${Date.now()}`
+      };
+      
+      await dispatch(createTicket(ticketData)).unwrap();
+      setSuccessMessage('Ticket created successfully!');
+      setShowSuccessAlert(true);
+      
+      reset();
+    } catch (err) {
+      console.error('Failed to create ticket:', err);
     }
   };
   
@@ -146,7 +82,7 @@ function TicketCreationForm() {
         Create New Ticket
       </Typography>
       
-      <Box component="form" onSubmit={handleSubmit} noValidate>
+      <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
             <TextField
@@ -154,11 +90,9 @@ function TicketCreationForm() {
               fullWidth
               id="clientName"
               label="Client Name"
-              name="clientName"
-              value={formData.clientName}
-              onChange={handleChange}
-              error={!!formErrors.clientName}
-              helperText={formErrors.clientName}
+              {...register('clientName')}
+              error={!!errors.clientName}
+              helperText={errors.clientName?.message}
               margin="normal"
             />
           </Grid>
@@ -169,12 +103,10 @@ function TicketCreationForm() {
               fullWidth
               id="clientEmail"
               label="Client Email"
-              name="clientEmail"
               type="email"
-              value={formData.clientEmail}
-              onChange={handleChange}
-              error={!!formErrors.clientEmail}
-              helperText={formErrors.clientEmail}
+              {...register('clientEmail')}
+              error={!!errors.clientEmail}
+              helperText={errors.clientEmail?.message}
               margin="normal"
             />
           </Grid>
@@ -185,11 +117,9 @@ function TicketCreationForm() {
               fullWidth
               id="clientAddress"
               label="Client Address"
-              name="clientAddress"
-              value={formData.clientAddress}
-              onChange={handleChange}
-              error={!!formErrors.clientAddress}
-              helperText={formErrors.clientAddress}
+              {...register('clientAddress')}
+              error={!!errors.clientAddress}
+              helperText={errors.clientAddress?.message}
               margin="normal"
             />
           </Grid>
@@ -200,11 +130,9 @@ function TicketCreationForm() {
               fullWidth
               id="clientPhone"
               label="Client Phone"
-              name="clientPhone"
-              value={formData.clientPhone}
-              onChange={handleChange}
-              error={!!formErrors.clientPhone}
-              helperText={formErrors.clientPhone}
+              {...register('clientPhone')}
+              error={!!errors.clientPhone}
+              helperText={errors.clientPhone?.message}
               margin="normal"
               placeholder="+61412345678"
             />
@@ -216,12 +144,10 @@ function TicketCreationForm() {
               fullWidth
               id="amount"
               label="Amount"
-              name="amount"
               type="number"
-              value={formData.amount}
-              onChange={handleChange}
-              error={!!formErrors.amount}
-              helperText={formErrors.amount}
+              {...register('amount')}
+              error={!!errors.amount}
+              helperText={errors.amount?.message}
               margin="normal"
               InputProps={{
                 startAdornment: <InputAdornment position="start">$</InputAdornment>,
@@ -234,13 +160,11 @@ function TicketCreationForm() {
               fullWidth
               id="notes"
               label="Notes"
-              name="notes"
               multiline
               rows={4}
-              value={formData.notes}
-              onChange={handleChange}
-              error={!!formErrors.notes}
-              helperText={formErrors.notes}
+              {...register('notes')}
+              error={!!errors.notes}
+              helperText={errors.notes?.message}
               margin="normal"
             />
           </Grid>
@@ -281,7 +205,6 @@ function TicketCreationForm() {
       </Snackbar>
     </Paper>
   );
-};
+}
 
 export default TicketCreationForm;
-
