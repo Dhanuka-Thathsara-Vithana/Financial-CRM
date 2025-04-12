@@ -96,4 +96,19 @@ exports.getCurrentUser = async (req, res) => {
       res.status(500).send({ message: error.message });
     }
   };
+
+  exports.getUsersWithoutAdmins = async (req, res) => {
+    try {
+      const users = await User.findAll({
+        where: {
+          role: ['mortgage_broker', 'financial_planner']
+        },
+        attributes: ['id', 'username', 'email', 'firstName', 'lastName', 'phone', 'role']
+      });
+      res.status(200).send(users);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      res.status(500).send({ message: error.message });
+    }
+  };
   
